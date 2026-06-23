@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+transformers
+torch
+pydantic
+accelerate
+PyPDF2
+python-docx
