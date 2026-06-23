@@ -72,7 +72,7 @@ function App() {
 
   // ─── Check Backend ───
   useEffect(() => {
-    fetch('http://localhost:8000/health')
+    fetch('https://clinical-ner-api.onrender.com')
       .then(r => r.ok ? setBackendStatus('connected') : setBackendStatus('error'))
       .catch(() => setBackendStatus('offline'));
   }, []);
@@ -82,7 +82,7 @@ function App() {
     if (!text.trim()) return;
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/predict', {
+      const res = await fetch('https://clinical-ner-api.onrender.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
