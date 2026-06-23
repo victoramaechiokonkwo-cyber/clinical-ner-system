@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
+// ─── HARDCODED API URL ───
+const API_URL = 'https://clinical-ner-api.onrender.com';
+
 // ─── Color Palette for Entities ───
 const ENTITY_STYLES = {
   "DISEASE": { color: "#dc2626", bg: "#fee2e2", label: "Disease" },
@@ -23,10 +26,10 @@ const Icons = {
       <line x1="12" y1="3" x2="12" y2="15"/>
     </svg>
   ),
-  File: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
-      <polyline points="14 2 14 8 20 8"/>
+  Trash: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
     </svg>
   ),
   Download: () => (
@@ -34,17 +37,6 @@ const Icons = {
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
       <polyline points="7 10 12 15 17 10"/>
       <line x1="12" y1="15" x2="12" y2="3"/>
-    </svg>
-  ),
-  Trash: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="3 6 5 6 21 6"/>
-      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-    </svg>
-  ),
-  Activity: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
     </svg>
   ),
   Check: () => (
@@ -55,8 +47,7 @@ const Icons = {
 };
 
 function App() {
-  // ─── State ───
-  const [activeTab, setActiveTab] = useState('text'); // 'text' | 'upload'
+  const [activeTab, setActiveTab] = useState('text');
   const [text, setText] = useState(
     "Patient John Doe was diagnosed with Type 2 Diabetes Mellitus and prescribed Metformin 500mg twice daily. Scheduled for coronary angiography next Tuesday with Dr. Sarah Smith."
   );
@@ -72,7 +63,7 @@ function App() {
 
   // ─── Check Backend ───
   useEffect(() => {
-    fetch('https://clinical-ner-api.onrender.com')
+    fetch(`${API_URL}/health`)
       .then(r => r.ok ? setBackendStatus('connected') : setBackendStatus('error'))
       .catch(() => setBackendStatus('offline'));
   }, []);
@@ -82,7 +73,7 @@ function App() {
     if (!text.trim()) return;
     setLoading(true);
     try {
-      const res = await fetch('https://clinical-ner-api.onrender.com', {
+      const res = await fetch(`${API_URL}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
@@ -102,7 +93,7 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const res = await fetch('http://localhost:8000/upload', {
+      const res = await fetch(`${API_URL}/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -111,7 +102,7 @@ function App() {
       setText(data.text);
       setEntities(data.entities);
       setStats(data.stats);
-      setActiveTab('text'); // Switch to text view to show results
+      setActiveTab('text');
     } catch (err) {
       alert('Upload failed: ' + err.message);
     }
@@ -177,7 +168,7 @@ function App() {
 
   // ─── Render Highlighted Text ───
   const renderHighlightedText = () => {
-    if (!filteredEntities.length) return <p style={{lineHeight: 1.8, color: '#475569'}}>{text}</p>;
+    if (!filteredEntities.length) return <p style={{lineHeight: 1.8, color: '#475569', fontSize: '15px'}}>{text}</p>;
     
     let parts = [];
     let lastIndex = 0;
@@ -330,7 +321,7 @@ function App() {
                     resize: 'vertical',
                     outline: 'none',
                     transition: 'border-color 0.2s, box-shadow 0.2s',
-                    color: '#334155'
+                    color: '#334155'  // ← FIXED: Lighter text color instead of dark black
                   }}
                   onFocus={(e) => { e.target.style.borderColor = '#0891b2'; e.target.style.boxShadow = '0 0 0 3px rgba(8,145,178,0.1)'; }}
                   onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
