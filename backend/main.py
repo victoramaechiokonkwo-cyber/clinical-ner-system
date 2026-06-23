@@ -2,7 +2,8 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
-from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline
+import requests
+import os
 import io
 
 # Optional file extractors
@@ -20,21 +21,26 @@ except ImportError:
 
 app = FastAPI(title="Clinical NER System")
 
+# CORS
+origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://clinical-ner-system.vercel.app",
+    os.getenv("FRONTEND_URL", "")
+]
+origins = [o for o in origins if o]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Load model
-MODEL_NAME = "d4data/biomedical-ner-all"
-print("Loading AI model... please wait...")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModelForTokenClassification.from_pretrained(MODEL_NAME)
-ner_pipeline = pipeline("ner", model=model, tokenizer=tokenizer, aggregation_strategy="simple")
-print("Model loaded successfully!")
+# Hugging Face Inference API (free, no download needed)
+HF_API_URL = "https://api-inference.huggingface.co/models/d4data/biomedical-ner-all"
+HF_TOKEN = os.getenv("HF_API_TOKEN", "")
 
 class TextInput(BaseModel):
     text: str
@@ -51,6 +57,14 @@ class NERResponse(BaseModel):
     text: str
     stats: dict
 
+def query_hf(text):
+    headers = {"Authorization": f"Bearer {HF_TOKEN}"} if HF_TOKEN else {}
+    payload = {"inputs": text}
+    response = requests.post(HF_API_URL, headers=headers, json=payload, timeout=30)
+    if response.status_code != 200:
+        raise HTTPException(503, f"Hugging Face API error: {response.text}")
+    return response.json()
+
 def extract_text_from_file(file: UploadFile) -> str:
     filename = file.filename.lower()
     content = file.file.read()
@@ -60,13 +74,13 @@ def extract_text_from_file(file: UploadFile) -> str:
     
     elif filename.endswith('.docx'):
         if not HAS_DOCX:
-            raise HTTPException(400, "python-docx not installed. Run: pip install python-docx")
+            raise HTTPException(400, "python-docx not installed")
         doc = docx.Document(io.BytesIO(content))
         return "\n".join([para.text for para in doc.paragraphs if para.text.strip()])
     
     elif filename.endswith('.pdf'):
         if not HAS_PDF:
-            raise HTTPException(400, "PyPDF2 not installed. Run: pip install PyPDF2")
+            raise HTTPException(400, "PyPDF2 not installed")
         reader = PyPDF2.PdfReader(io.BytesIO(content))
         text = ""
         for page in reader.pages:
@@ -82,15 +96,18 @@ def process_text(text: str):
     if not text or not text.strip():
         return {"entities": [], "text": "", "stats": {"total": 0, "by_type": {}}}
     
-    results = ner_pipeline(text)
+    # Call Hugging Face API
+    hf_results = query_hf(text)
+    
+    # Parse results
     entities = []
-    for r in results:
+    for r in hf_results:
         entities.append({
-            "text": r["word"],
-            "label": r["entity_group"],
-            "start": r["start"],
-            "end": r["end"],
-            "score": round(r["score"], 4)
+            "text": r.get("word", r.get("text", "")),
+            "label": r.get("entity_group", r.get("entity", "UNKNOWN")),
+            "start": r.get("start", 0),
+            "end": r.get("end", 0),
+            "score": round(r.get("score", 0), 4)
         })
     
     stats = {"total": len(entities), "by_type": {}}
@@ -114,7 +131,7 @@ def upload_file(file: UploadFile = File(...)):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "model": MODEL_NAME}
+    return {"status": "ok", "model": "HF Inference API", "hf_url": HF_API_URL}
 
 if __name__ == "__main__":
     import uvicorn
