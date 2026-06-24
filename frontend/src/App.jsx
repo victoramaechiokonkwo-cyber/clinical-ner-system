@@ -4,6 +4,14 @@ import './App.css';
 // ─── HARDCODED API URL ───
 const API_URL = 'https://clinical-ner-api.onrender.com';
 
+// ─── DEMO USERS ───
+const DEMO_USERS = [
+  { username: 'admin', password: 'admin123', role: 'Administrator', name: 'Dr. Admin' },
+  { username: 'doctor', password: 'doctor123', role: 'Physician', name: 'Dr. Sarah Smith' },
+  { username: 'nurse', password: 'nurse123', role: 'Nurse', name: 'Nurse Jane Wilson' },
+  { username: 'student', password: 'student123', role: 'Medical Student', name: 'Student Mike Brown' }
+];
+
 // ─── Color Palette ───
 const ENTITY_STYLES = {
   "DISEASE": { color: "#dc2626", bg: "#fee2e2", label: "Disease" },
@@ -236,6 +244,16 @@ const Icons = {
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
     </svg>
   ),
+  Lock: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+  ),
+  Logout: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+  ),
   Wifi: () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/>
@@ -296,8 +314,247 @@ const DEMO_ENTITIES = [
   {"text": "Michael Johnson", "label": "PERSON", "start": 818, "end": 833, "score": 0.96},
 ];
 
+// ─── LOGIN COMPONENT ───
+function LoginPage({ onLogin }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const user = DEMO_USERS.find(u => u.username === username && u.password === password);
+    if (user) {
+      onLogin(user);
+    } else {
+      setError('Invalid username or password');
+    }
+  };
+
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #0891b2 0%, #0e7490 50%, #155e75 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '20px'
+    }}>
+      <div style={{
+        background: '#ffffff',
+        borderRadius: '20px',
+        padding: '48px',
+        width: '100%',
+        maxWidth: '420px',
+        boxShadow: '0 25px 50px rgba(0,0,0,0.25)'
+      }}>
+        {/* Logo */}
+        <div style={{textAlign: 'center', marginBottom: '32px'}}>
+          <div style={{
+            width: '72px', height: '72px', borderRadius: '20px',
+            background: '#0891b2', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'white', fontWeight: 800, fontSize: '36px',
+            margin: '0 auto 20px'
+          }}>
+            ⚕
+          </div>
+          <h1 style={{fontSize: '28px', fontWeight: 800, color: '#0f172a', margin: 0}}>
+            Clinical NER
+          </h1>
+          <p style={{fontSize: '15px', color: '#64748b', margin: '8px 0 0 0'}}>
+            Hospital Information Management System
+          </p>
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div style={{
+            background: '#fef2f2',
+            border: '1.5px solid #fecaca',
+            borderRadius: '10px',
+            padding: '12px 16px',
+            marginBottom: '20px',
+            color: '#dc2626',
+            fontSize: '14px',
+            fontWeight: 600
+          }}>
+            {error}
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit}>
+          <div style={{marginBottom: '20px'}}>
+            <label style={{
+              display: 'block',
+              fontSize: '14px',
+              fontWeight: 700,
+              color: '#374151',
+              marginBottom: '8px'
+            }}>
+              Username
+            </label>
+            <div style={{position: 'relative'}}>
+              <div style={{
+                position: 'absolute',
+                left: '14px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: '#94a3b8'
+              }}>
+                <Icons.User />
+              </div>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setError(''); }}
+                placeholder="Enter username"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px 12px 44px',
+                  borderRadius: '12px',
+                  border: '1.5px solid #e2e8f0',
+                  fontSize: '15px',
+                  outline: 'none',
+                  color: '#1e293b',
+                  backgroundColor: '#ffffff',
+                  transition: 'border-color 0.2s, box-shadow 0.2s'
+                }}
+                onFocus={(e) => { e.target.style.borderColor = '#0891b2'; e.target.style.boxShadow = '0 0 0 3px rgba(8,145,178,0.1)'; }}
+                onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
+              />
+            </div>
+          </div>
+
+          <div style={{marginBottom: '24px'}}>
+            <label style={{
+              display: 'block',
+              fontSize: '14px',
+              fontWeight: 700,
+              color: '#374151',
+              marginBottom: '8px'
+            }}>
+              Password
+            </label>
+            <div style={{position: 'relative'}}>
+              <div style={{
+                position: 'absolute',
+                left: '14px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: '#94a3b8'
+              }}>
+                <Icons.Lock />
+              </div>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setError(''); }}
+                placeholder="Enter password"
+                style={{
+                  width: '100%',
+                  padding: '12px 44px 12px 44px',
+                  borderRadius: '12px',
+                  border: '1.5px solid #e2e8f0',
+                  fontSize: '15px',
+                  outline: 'none',
+                  color: '#1e293b',
+                  backgroundColor: '#ffffff',
+                  transition: 'border-color 0.2s, box-shadow 0.2s'
+                }}
+                onFocus={(e) => { e.target.style.borderColor = '#0891b2'; e.target.style.boxShadow = '0 0 0 3px rgba(8,145,178,0.1)'; }}
+                onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '14px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: '#0891b2',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            style={{
+              width: '100%',
+              padding: '14px',
+              borderRadius: '12px',
+              border: 'none',
+              background: '#0891b2',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: '16px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(8,145,178,0.35)',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => e.target.style.background = '#0e7490'}
+            onMouseLeave={(e) => e.target.style.background = '#0891b2'}
+          >
+            Sign In
+          </button>
+        </form>
+
+        {/* Demo Credentials */}
+        <div style={{
+          marginTop: '28px',
+          paddingTop: '24px',
+          borderTop: '1px solid #e2e8f0'
+        }}>
+          <p style={{
+            fontSize: '13px',
+            color: '#64748b',
+            fontWeight: 600,
+            marginBottom: '12px',
+            textAlign: 'center'
+          }}>
+            Demo Credentials
+          </p>
+          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px'}}>
+            {DEMO_USERS.map(u => (
+              <button
+                key={u.username}
+                type="button"
+                onClick={() => { setUsername(u.username); setPassword(u.password); }}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1.5px solid #e2e8f0',
+                  background: '#f8fafc',
+                  color: '#475569',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                <span style={{color: '#0891b2'}}>{u.username}</span> / {u.password}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN APP ───
 function App() {
-  const [activeTab, setActiveTab] = useState('text'); // 'text' | 'upload' | 'patients'
+  const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('text');
   const [text, setText] = useState(
     "Patient John Doe was diagnosed with Type 2 Diabetes Mellitus and prescribed Metformin 500mg twice daily. Scheduled for coronary angiography next Tuesday with Dr. Sarah Smith."
   );
@@ -311,13 +568,12 @@ function App() {
   const [threshold, setThreshold] = useState(0.0);
   const [hiddenTypes, setHiddenTypes] = useState(new Set());
   const [hoveredEntity, setHoveredEntity] = useState(null);
-
-  // Patient search state
   const [patientSearch, setPatientSearch] = useState('');
   const [selectedPatient, setSelectedPatient] = useState(null);
 
-  // ─── AUTO CHECK BACKEND + FALLBACK TO DEMO ───
+  // Auto check backend
   useEffect(() => {
+    if (!user) return;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
@@ -339,7 +595,7 @@ function App() {
       });
 
     return () => clearTimeout(timeoutId);
-  }, []);
+  }, [user]);
 
   const loadDemoData = () => {
     const stats = {"total": DEMO_ENTITIES.length, "by_type": {}};
@@ -354,13 +610,11 @@ function App() {
   const handleExtract = async () => {
     if (!text.trim()) return;
     setLoading(true);
-
     if (isDemoMode) {
       loadDemoData();
       setLoading(false);
       return;
     }
-
     try {
       const res = await fetch(`${API_URL}/predict`, {
         method: 'POST',
@@ -381,21 +635,16 @@ function App() {
   const handleFileUpload = async () => {
     if (!file) return;
     setLoading(true);
-
     if (isDemoMode) {
       loadDemoData();
       setActiveTab('text');
       setLoading(false);
       return;
     }
-
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const res = await fetch(`${API_URL}/upload`, {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch(`${API_URL}/upload`, { method: 'POST', body: formData });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Upload failed');
       setText(data.text);
@@ -457,9 +706,14 @@ function App() {
     setFile(null);
     setHiddenTypes(new Set());
     setThreshold(0);
-    if (isDemoMode) {
-      loadDemoData();
-    }
+    if (isDemoMode) loadDemoData();
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setEntities([]);
+    setStats(null);
+    setActiveTab('text');
   };
 
   const filteredEntities = entities.filter(e => 
@@ -472,11 +726,9 @@ function App() {
 
   const renderHighlightedText = () => {
     if (!filteredEntities.length) return <p style={{lineHeight: 1.8, color: '#475569', fontSize: '15px'}}>{text}</p>;
-    
     let parts = [];
     let lastIndex = 0;
     const sorted = [...filteredEntities].sort((a, b) => a.start - b.start);
-
     sorted.forEach((ent, i) => {
       if (ent.start > lastIndex) {
         parts.push(<span key={`g-${i}`}>{text.slice(lastIndex, ent.start)}</span>);
@@ -505,12 +757,10 @@ function App() {
       );
       lastIndex = ent.end;
     });
-
     if (lastIndex < text.length) parts.push(<span key="end">{text.slice(lastIndex)}</span>);
     return <p style={{lineHeight: 1.9, fontSize: '15px', color: '#334155'}}>{parts}</p>;
   };
 
-  // Patient search filter
   const filteredPatients = DEMO_PATIENTS.filter(p => 
     p.name.toLowerCase().includes(patientSearch.toLowerCase()) ||
     p.mrn.toLowerCase().includes(patientSearch.toLowerCase()) ||
@@ -539,6 +789,12 @@ function App() {
     return colors[status] || '#64748b';
   };
 
+  // ─── NOT LOGGED IN ───
+  if (!user) {
+    return <LoginPage onLogin={setUser} />;
+  }
+
+  // ─── LOGGED IN ───
   return (
     <div style={{minHeight: '100vh', background: '#f0f4f8'}}>
       
@@ -574,7 +830,46 @@ function App() {
           </div>
         </div>
 
-        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          {/* User Info */}
+          <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+            <div style={{
+              width: '32px', height: '32px', borderRadius: '50%',
+              background: '#0891b2', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontWeight: 700, fontSize: '14px'
+            }}>
+              {user.name.charAt(0)}
+            </div>
+            <div style={{textAlign: 'right'}}>
+              <p style={{margin: 0, fontSize: '13px', fontWeight: 700, color: '#0f172a'}}>{user.name}</p>
+              <p style={{margin: 0, fontSize: '11px', color: '#64748b'}}>{user.role}</p>
+            </div>
+          </div>
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '8px',
+              border: '1.5px solid #e2e8f0',
+              background: '#ffffff',
+              color: '#64748b',
+              fontWeight: 600,
+              fontSize: '13px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => { e.target.style.borderColor = '#ef4444'; e.target.style.color = '#ef4444'; }}
+            onMouseLeave={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.color = '#64748b'; }}
+          >
+            <Icons.Logout /> Logout
+          </button>
+
+          {/* Status */}
           {isDemoMode && (
             <span style={{
               padding: '4px 12px',
@@ -703,7 +998,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              /* ─── PATIENT SEARCH TAB ─── */
+              /* PATIENT SEARCH */
               <div>
                 <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px'}}>
                   <div style={{position: 'relative', flex: 1}}>
@@ -735,7 +1030,6 @@ function App() {
                   </span>
                 </div>
 
-                {/* Patient Grid */}
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px'}}>
                   {filteredPatients.map(patient => (
                     <div
@@ -747,8 +1041,7 @@ function App() {
                         padding: '20px',
                         border: '1.5px solid #e2e8f0',
                         cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        hover: { borderColor: '#0891b2', boxShadow: '0 4px 12px rgba(8,145,178,0.1)' }
+                        transition: 'all 0.2s'
                       }}
                       onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0891b2'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(8,145,178,0.1)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
@@ -778,12 +1071,10 @@ function App() {
                           {patient.status}
                         </span>
                       </div>
-                      
                       <div style={{marginBottom: '8px'}}>
                         <p style={{margin: 0, fontSize: '12px', color: '#64748b', marginBottom: '4px'}}>Age: {patient.age} • {patient.gender}</p>
                         <p style={{margin: 0, fontSize: '13px', color: '#334155', fontWeight: 600}}>{patient.diagnosis}</p>
                       </div>
-                      
                       <div style={{borderTop: '1px solid #e2e8f0', paddingTop: '10px', marginTop: '10px'}}>
                         <p style={{margin: 0, fontSize: '12px', color: '#64748b'}}>
                           <span style={{fontWeight: 600}}>Last Visit:</span> {patient.lastVisit}
@@ -867,134 +1158,60 @@ function App() {
           </div>
         </div>
 
-        {/* RESULTS DASHBOARD */}
+        {/* RESULTS */}
         {entities.length > 0 && stats && (
           <div style={{marginTop: '32px'}}>
-            
-            {/* Stats Cards */}
             <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '16px', marginBottom: '24px'}}>
-              <StatCard
-                title="Total Entities"
-                value={stats.total}
-                sub={`${Object.keys(stats.by_type).length} types found`}
-                color="#0891b2"
-              />
+              <StatCard title="Total Entities" value={stats.total} sub={`${Object.keys(stats.by_type).length} types found`} color="#0891b2" />
               {Object.entries(stats.by_type).map(([type, count]) => {
                 const style = getStyle(type);
-                return (
-                  <StatCard
-                    key={type}
-                    title={style.label}
-                    value={count}
-                    sub="extracted"
-                    color={style.color}
-                    bg={style.bg}
-                  />
-                );
+                return <StatCard key={type} title={style.label} value={count} sub="extracted" color={style.color} bg={style.bg} />;
               })}
             </div>
 
-            {/* Filters */}
             <div style={{
-              background: '#ffffff',
-              borderRadius: '12px',
-              padding: '16px 20px',
-              marginBottom: '20px',
-              boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-              border: '1px solid #e2e8f0',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '20px',
-              flexWrap: 'wrap'
+              background: '#ffffff', borderRadius: '12px', padding: '16px 20px', marginBottom: '20px',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.04)', border: '1px solid #e2e8f0',
+              display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap'
             }}>
               <span style={{fontWeight: 700, fontSize: '14px', color: '#475569'}}>Filters:</span>
-              
               <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                 <span style={{fontSize: '13px', color: '#64748b', fontWeight: 600}}>Min Confidence:</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={threshold}
-                  onChange={(e) => setThreshold(parseFloat(e.target.value))}
-                  style={{width: '120px', accentColor: '#0891b2'}}
-                />
-                <span style={{fontSize: '13px', fontWeight: 700, color: '#0891b2', minWidth: '36px'}}>
-                  {threshold.toFixed(2)}
-                </span>
+                <input type="range" min="0" max="1" step="0.05" value={threshold} onChange={(e) => setThreshold(parseFloat(e.target.value))} style={{width: '120px', accentColor: '#0891b2'}} />
+                <span style={{fontSize: '13px', fontWeight: 700, color: '#0891b2', minWidth: '36px'}}>{threshold.toFixed(2)}</span>
               </div>
-
               <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
                 {uniqueTypes.map(type => {
                   const style = getStyle(type);
                   const hidden = hiddenTypes.has(type);
                   return (
-                    <button
-                      key={type}
-                      onClick={() => toggleType(type)}
-                      style={{
-                        padding: '5px 12px',
-                        borderRadius: '20px',
-                        border: `1.5px solid ${hidden ? '#e2e8f0' : style.color}`,
-                        background: hidden ? '#f8fafc' : style.bg,
-                        color: hidden ? '#94a3b8' : style.color,
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        transition: 'all 0.15s'
-                      }}
-                    >
-                      {!hidden && <Icons.Check />}
-                      {style.label}
+                    <button key={type} onClick={() => toggleType(type)} style={{
+                      padding: '5px 12px', borderRadius: '20px',
+                      border: `1.5px solid ${hidden ? '#e2e8f0' : style.color}`,
+                      background: hidden ? '#f8fafc' : style.bg,
+                      color: hidden ? '#94a3b8' : style.color,
+                      fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '4px', transition: 'all 0.15s'
+                    }}>
+                      {!hidden && <Icons.Check />}{style.label}
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Split View */}
             <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px'}}>
-              
-              {/* Left: Highlighted Text */}
-              <div style={{
-                background: '#ffffff',
-                borderRadius: '16px',
-                padding: '24px',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
-                border: '1px solid #e2e8f0',
-                maxHeight: '600px',
-                overflow: 'auto'
-              }}>
+              <div style={{background: '#ffffff', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0', maxHeight: '600px', overflow: 'auto'}}>
                 <h3 style={{fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'}}>
                   <span style={{fontSize: '20px'}}>📝</span> Highlighted Text
-                  <span style={{marginLeft: 'auto', fontSize: '12px', color: '#64748b', fontWeight: 500}}>
-                    {filteredEntities.length} shown
-                  </span>
+                  <span style={{marginLeft: 'auto', fontSize: '12px', color: '#64748b', fontWeight: 500}}>{filteredEntities.length} shown</span>
                 </h3>
-                <div style={{
-                  background: '#f8fafc',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  borderLeft: '4px solid #0891b2'
-                }}>
+                <div style={{background: '#f8fafc', borderRadius: '12px', padding: '20px', borderLeft: '4px solid #0891b2'}}>
                   {renderHighlightedText()}
                 </div>
               </div>
 
-              {/* Right: Entity Table */}
-              <div style={{
-                background: '#ffffff',
-                borderRadius: '16px',
-                padding: '24px',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
-                border: '1px solid #e2e8f0',
-                maxHeight: '600px',
-                overflow: 'auto'
-              }}>
+              <div style={{background: '#ffffff', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0', maxHeight: '600px', overflow: 'auto'}}>
                 <h3 style={{fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'}}>
                   <span style={{fontSize: '20px'}}>📊</span> Entity Details
                 </h3>
@@ -1011,38 +1228,15 @@ function App() {
                     {filteredEntities.map((e, i) => {
                       const style = getStyle(e.label);
                       return (
-                        <tr
-                          key={i}
-                          style={{
-                            borderBottom: '1px solid #f1f5f9',
-                            background: hoveredEntity === e ? '#f0fdff' : 'transparent',
-                            transition: 'background 0.15s'
-                          }}
-                          onMouseEnter={() => setHoveredEntity(e)}
-                          onMouseLeave={() => setHoveredEntity(null)}
-                        >
+                        <tr key={i} style={{borderBottom: '1px solid #f1f5f9', background: hoveredEntity === e ? '#f0fdff' : 'transparent', transition: 'background 0.15s'}} onMouseEnter={() => setHoveredEntity(e)} onMouseLeave={() => setHoveredEntity(null)}>
                           <td style={{padding: '10px 8px', fontWeight: 700, color: '#334155'}}>{e.text}</td>
                           <td style={{padding: '10px 8px'}}>
-                            <span style={{
-                              background: style.bg,
-                              color: style.color,
-                              padding: '3px 10px',
-                              borderRadius: '20px',
-                              fontSize: '11px',
-                              fontWeight: 800,
-                              border: `1px solid ${style.color}`
-                            }}>
-                              {style.label}
-                            </span>
+                            <span style={{background: style.bg, color: style.color, padding: '3px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 800, border: `1px solid ${style.color}`}}>{style.label}</span>
                           </td>
                           <td style={{padding: '10px 8px', fontFamily: 'monospace', fontSize: '13px', color: '#475569'}}>
                             <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                              <div style={{
-                                width: '50px', height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden'
-                              }}>
-                                <div style={{
-                                  width: `${e.score * 100}%`, height: '100%', background: style.color, borderRadius: '3px'
-                                }}/>
+                              <div style={{width: '50px', height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden'}}>
+                                <div style={{width: `${e.score * 100}%`, height: '100%', background: style.color, borderRadius: '3px'}}/>
                               </div>
                               {e.score}
                             </div>
@@ -1054,9 +1248,7 @@ function App() {
                   </tbody>
                 </table>
                 {filteredEntities.length === 0 && (
-                  <p style={{textAlign: 'center', color: '#94a3b8', padding: '40px', fontSize: '14px'}}>
-                    No entities match your current filters.
-                  </p>
+                  <p style={{textAlign: 'center', color: '#94a3b8', padding: '40px', fontSize: '14px'}}>No entities match your current filters.</p>
                 )}
               </div>
             </div>
@@ -1064,15 +1256,7 @@ function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer style={{
-        textAlign: 'center',
-        padding: '24px',
-        color: '#94a3b8',
-        fontSize: '13px',
-        borderTop: '1px solid #e2e8f0',
-        marginTop: '48px'
-      }}>
+      <footer style={{textAlign: 'center', padding: '24px', color: '#94a3b8', fontSize: '13px', borderTop: '1px solid #e2e8f0', marginTop: '48px'}}>
         Clinical NER System — Powered by DistilBERT
       </footer>
     </div>
@@ -1081,52 +1265,23 @@ function App() {
 
 function StatCard({ title, value, sub, color, bg = '#ffffff' }) {
   return (
-    <div style={{
-      background: bg,
-      borderRadius: '14px',
-      padding: '20px',
-      border: '1.5px solid #e2e8f0',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '6px'
-    }}>
-      <span style={{fontSize: '12px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px'}}>
-        {title}
-      </span>
-      <span style={{fontSize: '32px', fontWeight: 800, color: color}}>
-        {value}
-      </span>
-      <span style={{fontSize: '12px', color: '#94a3b8', fontWeight: 500}}>
-        {sub}
-      </span>
+    <div style={{background: bg, borderRadius: '14px', padding: '20px', border: '1.5px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column', gap: '6px'}}>
+      <span style={{fontSize: '12px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px'}}>{title}</span>
+      <span style={{fontSize: '32px', fontWeight: 800, color: color}}>{value}</span>
+      <span style={{fontSize: '12px', color: '#94a3b8', fontWeight: 500}}>{sub}</span>
     </div>
   );
 }
 
 const thStyle = {
-  textAlign: 'left',
-  padding: '12px 8px',
-  color: '#64748b',
-  fontWeight: 700,
-  fontSize: '11px',
-  textTransform: 'uppercase',
-  letterSpacing: '0.5px'
+  textAlign: 'left', padding: '12px 8px', color: '#64748b', fontWeight: 700,
+  fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px'
 };
 
 const exportBtnStyle = {
-  padding: '10px 18px',
-  borderRadius: '8px',
-  border: '1.5px solid #e2e8f0',
-  background: '#ffffff',
-  color: '#475569',
-  fontWeight: 600,
-  fontSize: '13px',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '6px',
-  transition: 'all 0.2s'
+  padding: '10px 18px', borderRadius: '8px', border: '1.5px solid #e2e8f0',
+  background: '#ffffff', color: '#475569', fontWeight: 600, fontSize: '13px',
+  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s'
 };
 
 export default App;
