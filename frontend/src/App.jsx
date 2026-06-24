@@ -120,8 +120,12 @@ function App() {
 
   // ─── AUTO CHECK BACKEND + FALLBACK TO DEMO ───
   useEffect(() => {
-    fetch(`${API_URL}/health`, { signal: AbortSignal.timeout(5000) })
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    fetch(`${API_URL}/health`, { signal: controller.signal })
       .then(r => {
+        clearTimeout(timeoutId);
         if (r.ok) {
           setBackendStatus('connected');
           setIsDemoMode(false);
@@ -130,11 +134,13 @@ function App() {
         }
       })
       .catch(() => {
+        clearTimeout(timeoutId);
         setBackendStatus('offline');
         setIsDemoMode(true);
-        // Auto-load demo data silently
         loadDemoData();
       });
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const loadDemoData = () => {
@@ -151,7 +157,6 @@ function App() {
     if (!text.trim()) return;
     setLoading(true);
 
-    // If backend is offline, just reload demo data
     if (isDemoMode) {
       loadDemoData();
       setLoading(false);
@@ -168,7 +173,6 @@ function App() {
       setEntities(data.entities || []);
       setStats(data.stats || {total: 0, by_type: {}});
     } catch (err) {
-      // Backend failed mid-request — fallback to demo
       setBackendStatus('offline');
       setIsDemoMode(true);
       loadDemoData();
@@ -181,7 +185,6 @@ function App() {
     setLoading(true);
 
     if (isDemoMode) {
-      // In demo mode, just load demo data regardless of file
       loadDemoData();
       setActiveTab('text');
       setLoading(false);
@@ -256,7 +259,6 @@ function App() {
     setFile(null);
     setHiddenTypes(new Set());
     setThreshold(0);
-    // If demo mode, reload demo data
     if (isDemoMode) {
       loadDemoData();
     }
