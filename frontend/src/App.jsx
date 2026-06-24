@@ -42,12 +42,65 @@ const Icons = {
       <polyline points="20 6 9 17 4 12"/>
     </svg>
   ),
-  Play: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="5 3 19 12 5 21 5 3"/>
+  Wifi: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>
+    </svg>
+  ),
+  WifiOff: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+      <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+      <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+      <line x1="12" y1="20" x2="12.01" y2="20"/>
     </svg>
   )
 };
+
+// ─── DEMO DATA ───
+const DEMO_TEXT = `Patient John Doe, 58-year-old male, was admitted on June 15, 2024, with complaints of severe chest pain radiating to the left arm. 
+He has a history of Type 2 Diabetes Mellitus, Hypertension, and Hyperlipidemia. 
+Current medications include Metformin 1000mg twice daily, Lisinopril 10mg daily, Atorvastatin 40mg daily, and Aspirin 81mg daily.
+Physical examination revealed elevated blood pressure at 160/95 mmHg. 
+ECG showed ST-segment elevation in leads V1-V4. 
+Troponin levels were elevated at 2.4 ng/mL. 
+Patient was diagnosed with Acute Myocardial Infarction and scheduled for emergency Percutaneous Coronary Intervention (PCI).
+Dr. Sarah Smith, the attending cardiologist, performed the procedure. 
+Post-operative care included administration of Heparin infusion and Clopidogrel 75mg daily.
+Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson.`;
+
+const DEMO_ENTITIES = [
+  {"text": "John Doe", "label": "PERSON", "start": 8, "end": 16, "score": 0.98},
+  {"text": "chest pain", "label": "SYMPTOM", "start": 81, "end": 91, "score": 0.96},
+  {"text": "left arm", "label": "ANATOMY", "start": 111, "end": 119, "score": 0.92},
+  {"text": "Type 2 Diabetes Mellitus", "label": "DISEASE", "start": 147, "end": 171, "score": 0.97},
+  {"text": "Hypertension", "label": "DISEASE", "start": 173, "end": 185, "score": 0.95},
+  {"text": "Hyperlipidemia", "label": "DISEASE", "start": 191, "end": 205, "score": 0.94},
+  {"text": "Metformin", "label": "DRUG", "start": 232, "end": 241, "score": 0.98},
+  {"text": "1000mg", "label": "CHEMICAL", "start": 242, "end": 248, "score": 0.89},
+  {"text": "Lisinopril", "label": "DRUG", "start": 266, "end": 276, "score": 0.97},
+  {"text": "10mg", "label": "CHEMICAL", "start": 277, "end": 281, "score": 0.88},
+  {"text": "Atorvastatin", "label": "DRUG", "start": 291, "end": 303, "score": 0.97},
+  {"text": "40mg", "label": "CHEMICAL", "start": 304, "end": 308, "score": 0.87},
+  {"text": "Aspirin", "label": "DRUG", "start": 318, "end": 325, "score": 0.96},
+  {"text": "81mg", "label": "CHEMICAL", "start": 326, "end": 330, "score": 0.86},
+  {"text": "blood pressure", "label": "ANATOMY", "start": 377, "end": 391, "score": 0.91},
+  {"text": "160/95 mmHg", "label": "CHEMICAL", "start": 395, "end": 406, "score": 0.84},
+  {"text": "ST-segment elevation", "label": "SYMPTOM", "start": 421, "end": 441, "score": 0.93},
+  {"text": "Troponin", "label": "CHEMICAL", "start": 466, "end": 474, "score": 0.95},
+  {"text": "2.4 ng/mL", "label": "CHEMICAL", "start": 492, "end": 501, "score": 0.82},
+  {"text": "Acute Myocardial Infarction", "label": "DISEASE", "start": 520, "end": 547, "score": 0.98},
+  {"text": "Percutaneous Coronary Intervention", "label": "PROCEDURE", "start": 572, "end": 606, "score": 0.96},
+  {"text": "PCI", "label": "PROCEDURE", "start": 608, "end": 611, "score": 0.94},
+  {"text": "Sarah Smith", "label": "PERSON", "start": 632, "end": 643, "score": 0.97},
+  {"text": "cardiologist", "label": "ORGANIZATION", "start": 656, "end": 668, "score": 0.88},
+  {"text": "Heparin", "label": "DRUG", "start": 724, "end": 731, "score": 0.96},
+  {"text": "Clopidogrel", "label": "DRUG", "start": 747, "end": 758, "score": 0.97},
+  {"text": "75mg", "label": "CHEMICAL", "start": 759, "end": 763, "score": 0.85},
+  {"text": "July 2, 2024", "label": "TEMPORAL", "start": 800, "end": 812, "score": 0.92},
+  {"text": "Michael Johnson", "label": "PERSON", "start": 818, "end": 833, "score": 0.96},
+];
 
 function App() {
   const [activeTab, setActiveTab] = useState('text');
@@ -60,19 +113,51 @@ function App() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [backendStatus, setBackendStatus] = useState('checking');
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const [threshold, setThreshold] = useState(0.0);
   const [hiddenTypes, setHiddenTypes] = useState(new Set());
   const [hoveredEntity, setHoveredEntity] = useState(null);
 
+  // ─── AUTO CHECK BACKEND + FALLBACK TO DEMO ───
   useEffect(() => {
-    fetch(`${API_URL}/health`)
-      .then(r => r.ok ? setBackendStatus('connected') : setBackendStatus('error'))
-      .catch(() => setBackendStatus('offline'));
+    fetch(`${API_URL}/health`, { signal: AbortSignal.timeout(5000) })
+      .then(r => {
+        if (r.ok) {
+          setBackendStatus('connected');
+          setIsDemoMode(false);
+        } else {
+          throw new Error('Backend error');
+        }
+      })
+      .catch(() => {
+        setBackendStatus('offline');
+        setIsDemoMode(true);
+        // Auto-load demo data silently
+        loadDemoData();
+      });
   }, []);
+
+  const loadDemoData = () => {
+    const stats = {"total": DEMO_ENTITIES.length, "by_type": {}};
+    for (const e of DEMO_ENTITIES) {
+      stats["by_type"][e.label] = (stats["by_type"][e.label] || 0) + 1;
+    }
+    setText(DEMO_TEXT);
+    setEntities(DEMO_ENTITIES);
+    setStats(stats);
+  };
 
   const handleExtract = async () => {
     if (!text.trim()) return;
     setLoading(true);
+
+    // If backend is offline, just reload demo data
+    if (isDemoMode) {
+      loadDemoData();
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch(`${API_URL}/predict`, {
         method: 'POST',
@@ -83,73 +168,26 @@ function App() {
       setEntities(data.entities || []);
       setStats(data.stats || {total: 0, by_type: {}});
     } catch (err) {
-      alert('Backend failed. Try Demo Mode instead!');
+      // Backend failed mid-request — fallback to demo
+      setBackendStatus('offline');
+      setIsDemoMode(true);
+      loadDemoData();
     }
     setLoading(false);
-  };
-
-  const handleDemo = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/demo`);
-      const data = await res.json();
-      setText(data.text);
-      setEntities(data.entities || []);
-      setStats(data.stats || {total: 0, by_type: {}});
-    } catch (err) {
-      // Ultimate fallback: load demo data directly in frontend
-      loadLocalDemo();
-    }
-    setLoading(false);
-  };
-
-  const loadLocalDemo = () => {
-    const demoText = `Patient John Doe, 58-year-old male, was admitted on June 15, 2024, with complaints of severe chest pain radiating to the left arm. 
-He has a history of Type 2 Diabetes Mellitus, Hypertension, and Hyperlipidemia. 
-Current medications include Metformin 1000mg twice daily, Lisinopril 10mg daily, Atorvastatin 40mg daily, and Aspirin 81mg daily.
-Physical examination revealed elevated blood pressure at 160/95 mmHg. 
-ECG showed ST-segment elevation in leads V1-V4. 
-Troponin levels were elevated at 2.4 ng/mL. 
-Patient was diagnosed with Acute Myocardial Infarction and scheduled for emergency Percutaneous Coronary Intervention (PCI).
-Dr. Sarah Smith, the attending cardiologist, performed the procedure. 
-Post-operative care included administration of Heparin infusion and Clopidogrel 75mg daily.
-Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson.`;
-
-    const demoEntities = [
-      {"text": "John Doe", "label": "PERSON", "start": 8, "end": 16, "score": 0.98},
-      {"text": "chest pain", "label": "SYMPTOM", "start": 81, "end": 91, "score": 0.96},
-      {"text": "left arm", "label": "ANATOMY", "start": 111, "end": 119, "score": 0.92},
-      {"text": "Type 2 Diabetes Mellitus", "label": "DISEASE", "start": 147, "end": 171, "score": 0.97},
-      {"text": "Hypertension", "label": "DISEASE", "start": 173, "end": 185, "score": 0.95},
-      {"text": "Hyperlipidemia", "label": "DISEASE", "start": 191, "end": 205, "score": 0.94},
-      {"text": "Metformin", "label": "DRUG", "start": 232, "end": 241, "score": 0.98},
-      {"text": "1000mg", "label": "CHEMICAL", "start": 242, "end": 248, "score": 0.89},
-      {"text": "Lisinopril", "label": "DRUG", "start": 266, "end": 276, "score": 0.97},
-      {"text": "Atorvastatin", "label": "DRUG", "start": 291, "end": 303, "score": 0.97},
-      {"text": "Aspirin", "label": "DRUG", "start": 318, "end": 325, "score": 0.96},
-      {"text": "blood pressure", "label": "ANATOMY", "start": 377, "end": 391, "score": 0.91},
-      {"text": "Acute Myocardial Infarction", "label": "DISEASE", "start": 520, "end": 547, "score": 0.98},
-      {"text": "Percutaneous Coronary Intervention", "label": "PROCEDURE", "start": 572, "end": 606, "score": 0.96},
-      {"text": "Sarah Smith", "label": "PERSON", "start": 632, "end": 643, "score": 0.97},
-      {"text": "Heparin", "label": "DRUG", "start": 724, "end": 731, "score": 0.96},
-      {"text": "Clopidogrel", "label": "DRUG", "start": 747, "end": 758, "score": 0.97},
-      {"text": "July 2, 2024", "label": "TEMPORAL", "start": 800, "end": 812, "score": 0.92},
-      {"text": "Michael Johnson", "label": "PERSON", "start": 818, "end": 833, "score": 0.96},
-    ];
-
-    const stats = {"total": demoEntities.length, "by_type": {}};
-    for (const e of demoEntities) {
-      stats["by_type"][e.label] = (stats["by_type"][e.label] || 0) + 1;
-    }
-
-    setText(demoText);
-    setEntities(demoEntities);
-    setStats(stats);
   };
 
   const handleFileUpload = async () => {
     if (!file) return;
     setLoading(true);
+
+    if (isDemoMode) {
+      // In demo mode, just load demo data regardless of file
+      loadDemoData();
+      setActiveTab('text');
+      setLoading(false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     try {
@@ -164,7 +202,10 @@ Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson.`;
       setStats(data.stats || {total: 0, by_type: {}});
       setActiveTab('text');
     } catch (err) {
-      alert('Upload failed. Try Demo Mode instead!');
+      setBackendStatus('offline');
+      setIsDemoMode(true);
+      loadDemoData();
+      setActiveTab('text');
     }
     setLoading(false);
   };
@@ -215,6 +256,10 @@ Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson.`;
     setFile(null);
     setHiddenTypes(new Set());
     setThreshold(0);
+    // If demo mode, reload demo data
+    if (isDemoMode) {
+      loadDemoData();
+    }
   };
 
   const filteredEntities = entities.filter(e => 
@@ -300,7 +345,20 @@ Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson.`;
           </div>
         </div>
 
-        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+          {isDemoMode && (
+            <span style={{
+              padding: '4px 12px',
+              borderRadius: '20px',
+              background: '#fef3c7',
+              border: '1.5px solid #f59e0b',
+              color: '#92400e',
+              fontSize: '12px',
+              fontWeight: 700
+            }}>
+              ⚡ Demo Mode
+            </span>
+          )}
           <div style={{
             display: 'flex', alignItems: 'center', gap: '6px',
             padding: '6px 14px', borderRadius: '20px',
@@ -309,62 +367,14 @@ Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson.`;
             fontSize: '13px', fontWeight: 600,
             color: backendStatus === 'connected' ? '#059669' : '#dc2626'
           }}>
-            <span style={{
-              width: '7px', height: '7px', borderRadius: '50%',
-              background: backendStatus === 'connected' ? '#10b981' : '#ef4444',
-              display: 'inline-block'
-            }}/>
-            {backendStatus === 'connected' ? 'Backend Connected' : 'Backend Offline'}
+            {backendStatus === 'connected' ? <Icons.Wifi /> : <Icons.WifiOff />}
+            {backendStatus === 'connected' ? 'Live' : 'Offline'}
           </div>
         </div>
       </header>
 
       <main style={{maxWidth: '1200px', margin: '0 auto', padding: '32px 24px'}}>
         
-        {/* DEMO BANNER */}
-        <div style={{
-          background: '#fef3c7',
-          border: '1.5px solid #f59e0b',
-          borderRadius: '12px',
-          padding: '16px 20px',
-          marginBottom: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px'
-        }}>
-          <div>
-            <p style={{margin: 0, fontWeight: 700, color: '#92400e', fontSize: '14px'}}>
-              ⚡ Demo Mode Available
-            </p>
-            <p style={{margin: '4px 0 0 0', color: '#a16207', fontSize: '13px'}}>
-              Load pre-filled clinical data with extracted entities instantly — no backend needed.
-            </p>
-          </div>
-          <button
-            onClick={handleDemo}
-            disabled={loading}
-            style={{
-              padding: '10px 24px',
-              borderRadius: '8px',
-              border: 'none',
-              background: '#f59e0b',
-              color: 'white',
-              fontWeight: 700,
-              fontSize: '14px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 4px 12px rgba(245,158,11,0.3)',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            <Icons.Play /> Load Demo Data
-          </button>
-        </div>
-
         {/* INPUT CARD */}
         <div style={{
           background: '#ffffff',
@@ -422,8 +432,8 @@ Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson.`;
                     resize: 'vertical',
                     outline: 'none',
                     transition: 'border-color 0.2s, box-shadow 0.2s',
-                    color: '#1e293b',           // ← FIXED: Dark but readable text
-                    backgroundColor: '#ffffff'   // ← FIXED: White background always
+                    color: '#1e293b',
+                    backgroundColor: '#ffffff'
                   }}
                   onFocus={(e) => { e.target.style.borderColor = '#0891b2'; e.target.style.boxShadow = '0 0 0 3px rgba(8,145,178,0.1)'; }}
                   onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
