@@ -18,6 +18,190 @@ const ENTITY_STYLES = {
   "default": { color: "#475569", bg: "#f1f5f9", label: "Other" }
 };
 
+// ─── 15 DEMO PATIENTS ───
+const DEMO_PATIENTS = [
+  {
+    id: "PT-001",
+    name: "John Doe",
+    age: 58,
+    gender: "Male",
+    mrn: "MRN-2024-001",
+    diagnosis: "Type 2 Diabetes Mellitus, Hypertension, Hyperlipidemia",
+    medications: "Metformin, Lisinopril, Atorvastatin, Aspirin",
+    lastVisit: "2024-06-15",
+    status: "Admitted",
+    notes: "Patient admitted with chest pain. Scheduled for PCI. Dr. Sarah Smith attending."
+  },
+  {
+    id: "PT-002",
+    name: "Jane Smith",
+    age: 45,
+    gender: "Female",
+    mrn: "MRN-2024-002",
+    diagnosis: "Chronic Obstructive Pulmonary Disease, Asthma",
+    medications: "Albuterol, Prednisone, Fluticasone",
+    lastVisit: "2024-06-20",
+    status: "Outpatient",
+    notes: "Presenting with shortness of breath and fatigue. Pulmonary function tests ordered."
+  },
+  {
+    id: "PT-003",
+    name: "Robert Johnson",
+    age: 67,
+    gender: "Male",
+    mrn: "MRN-2024-003",
+    diagnosis: "Atrial Fibrillation, Heart Failure",
+    medications: "Warfarin, Digoxin, Furosemide",
+    lastVisit: "2024-06-18",
+    status: "Critical",
+    notes: "Irregular heartbeat detected. Cardioversion scheduled. Monitor closely."
+  },
+  {
+    id: "PT-004",
+    name: "Emily Davis",
+    age: 32,
+    gender: "Female",
+    mrn: "MRN-2024-004",
+    diagnosis: "Rheumatoid Arthritis",
+    medications: "Methotrexate, Hydroxychloroquine",
+    lastVisit: "2024-06-22",
+    status: "Stable",
+    notes: "Joint swelling reduced. Continue current regimen. Follow-up in 3 months."
+  },
+  {
+    id: "PT-005",
+    name: "Michael Brown",
+    age: 52,
+    gender: "Male",
+    mrn: "MRN-2024-005",
+    diagnosis: "Colorectal Cancer, Stage II",
+    medications: "Oxaliplatin, Capecitabine",
+    lastVisit: "2024-06-10",
+    status: "Oncology Care",
+    notes: "Chemotherapy cycle 3 completed. Neutrophil count low. Monitor for infection."
+  },
+  {
+    id: "PT-006",
+    name: "Sarah Wilson",
+    age: 29,
+    gender: "Female",
+    mrn: "MRN-2024-006",
+    diagnosis: "Major Depressive Disorder, Generalized Anxiety",
+    medications: "Sertraline, Clonazepam",
+    lastVisit: "2024-06-21",
+    status: "Outpatient",
+    notes: "Patient reports improved mood. Sleep quality better. Continue therapy."
+  },
+  {
+    id: "PT-007",
+    name: "David Miller",
+    age: 71,
+    gender: "Male",
+    mrn: "MRN-2024-007",
+    diagnosis: "Alzheimer's Disease, Hypertension",
+    medications: "Donepezil, Memantine, Amlodipine",
+    lastVisit: "2024-06-19",
+    status: "Long-term Care",
+    notes: "Cognitive decline progressing. Family meeting scheduled. Safety assessment needed."
+  },
+  {
+    id: "PT-008",
+    name: "Lisa Anderson",
+    age: 41,
+    gender: "Female",
+    mrn: "MRN-2024-008",
+    diagnosis: "Systemic Lupus Erythematosus",
+    medications: "Prednisone, Mycophenolate, Belimumab",
+    lastVisit: "2024-06-17",
+    status: "Stable",
+    notes: "Rash improving. Kidney function stable. Continue immunosuppressants."
+  },
+  {
+    id: "PT-009",
+    name: "James Taylor",
+    age: 55,
+    gender: "Male",
+    mrn: "MRN-2024-009",
+    diagnosis: "Chronic Kidney Disease, Stage 3",
+    medications: "Epoetin alfa, Sevelamer, Lisinopril",
+    lastVisit: "2024-06-23",
+    status: "Outpatient",
+    notes: "Creatinine elevated. Dialysis not yet indicated. Dietary counseling provided."
+  },
+  {
+    id: "PT-010",
+    name: "Maria Garcia",
+    age: 38,
+    gender: "Female",
+    mrn: "MRN-2024-010",
+    diagnosis: "Multiple Sclerosis",
+    medications: "Interferon beta-1a, Baclofen",
+    lastVisit: "2024-06-14",
+    status: "Stable",
+    notes: "New lesion on MRI. Consider switching to ocrelizumab. Neurology consult."
+  },
+  {
+    id: "PT-011",
+    name: "William Martinez",
+    age: 63,
+    gender: "Male",
+    mrn: "MRN-2024-011",
+    diagnosis: "Parkinson's Disease, Depression",
+    medications: "Levodopa, Carbidopa, Pramipexole",
+    lastVisit: "2024-06-16",
+    status: "Outpatient",
+    notes: "Tremor worsening. Dyskinesia noted. Adjust levodopa dosing. PT referral."
+  },
+  {
+    id: "PT-012",
+    name: "Jennifer Lee",
+    age: 26,
+    gender: "Female",
+    mrn: "MRN-2024-012",
+    diagnosis: "Type 1 Diabetes Mellitus, Celiac Disease",
+    medications: "Insulin glargine, Insulin lispro",
+    lastVisit: "2024-06-24",
+    status: "Stable",
+    notes: "HbA1c 7.2%. Gluten-free diet maintained. Endocrine follow-up in 6 months."
+  },
+  {
+    id: "PT-013",
+    name: "Thomas Harris",
+    age: 49,
+    gender: "Male",
+    mrn: "MRN-2024-013",
+    diagnosis: "Hepatitis C, Cirrhosis",
+    medications: "Sofosbuvir, Velpatasvir",
+    lastVisit: "2024-06-12",
+    status: "Treatment",
+    notes: "Viral load undetectable. Liver enzymes improving. Continue antiviral therapy."
+  },
+  {
+    id: "PT-014",
+    name: "Patricia Clark",
+    age: 74,
+    gender: "Female",
+    mrn: "MRN-2024-014",
+    diagnosis: "Osteoporosis, Hypothyroidism",
+    medications: "Alendronate, Levothyroxine, Calcium",
+    lastVisit: "2024-06-11",
+    status: "Stable",
+    notes: "DEXA scan shows T-score -2.8. Fall risk assessment completed. Home safety check."
+  },
+  {
+    id: "PT-015",
+    name: "Charles Rodriguez",
+    age: 60,
+    gender: "Male",
+    mrn: "MRN-2024-015",
+    diagnosis: "Glioblastoma Multiforme",
+    medications: "Temozolomide, Dexamethasone, Levetiracetam",
+    lastVisit: "2024-06-13",
+    status: "Critical",
+    notes: "Post-surgical recovery. Radiation therapy completed. Monitor for seizures."
+  }
+];
+
 // ─── Icons ───
 const Icons = {
   Upload: () => (
@@ -40,6 +224,16 @@ const Icons = {
   Check: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  Search: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  ),
+  User: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
     </svg>
   ),
   Wifi: () => (
@@ -103,7 +297,7 @@ const DEMO_ENTITIES = [
 ];
 
 function App() {
-  const [activeTab, setActiveTab] = useState('text');
+  const [activeTab, setActiveTab] = useState('text'); // 'text' | 'upload' | 'patients'
   const [text, setText] = useState(
     "Patient John Doe was diagnosed with Type 2 Diabetes Mellitus and prescribed Metformin 500mg twice daily. Scheduled for coronary angiography next Tuesday with Dr. Sarah Smith."
   );
@@ -117,6 +311,10 @@ function App() {
   const [threshold, setThreshold] = useState(0.0);
   const [hiddenTypes, setHiddenTypes] = useState(new Set());
   const [hoveredEntity, setHoveredEntity] = useState(null);
+
+  // Patient search state
+  const [patientSearch, setPatientSearch] = useState('');
+  const [selectedPatient, setSelectedPatient] = useState(null);
 
   // ─── AUTO CHECK BACKEND + FALLBACK TO DEMO ───
   useEffect(() => {
@@ -312,6 +510,35 @@ function App() {
     return <p style={{lineHeight: 1.9, fontSize: '15px', color: '#334155'}}>{parts}</p>;
   };
 
+  // Patient search filter
+  const filteredPatients = DEMO_PATIENTS.filter(p => 
+    p.name.toLowerCase().includes(patientSearch.toLowerCase()) ||
+    p.mrn.toLowerCase().includes(patientSearch.toLowerCase()) ||
+    p.diagnosis.toLowerCase().includes(patientSearch.toLowerCase()) ||
+    p.id.toLowerCase().includes(patientSearch.toLowerCase())
+  );
+
+  const selectPatient = (patient) => {
+    setSelectedPatient(patient);
+    setText(patient.notes);
+    setEntities([]);
+    setStats(null);
+    setActiveTab('text');
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      'Admitted': '#dc2626',
+      'Critical': '#dc2626',
+      'Stable': '#059669',
+      'Outpatient': '#2563eb',
+      'Oncology Care': '#7c3aed',
+      'Treatment': '#d97706',
+      'Long-term Care': '#4f46e5'
+    };
+    return colors[status] || '#64748b';
+  };
+
   return (
     <div style={{minHeight: '100vh', background: '#f0f4f8'}}>
       
@@ -389,7 +616,8 @@ function App() {
           <div style={{display: 'flex', borderBottom: '1px solid #e2e8f0'}}>
             {[
               {id: 'text', label: '📝 Type / Paste Text'},
-              {id: 'upload', label: '📁 Upload Document'}
+              {id: 'upload', label: '📁 Upload Document'},
+              {id: 'patients', label: '👥 Patient Search'}
             ].map(tab => (
               <button
                 key={tab.id}
@@ -441,7 +669,7 @@ function App() {
                   onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
                 />
               </div>
-            ) : (
+            ) : activeTab === 'upload' ? (
               <div
                 onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
@@ -474,68 +702,168 @@ function App() {
                   {file ? `${(file.size / 1024).toFixed(1)} KB — Click Extract to process` : 'Supports .txt, .docx, .pdf'}
                 </p>
               </div>
+            ) : (
+              /* ─── PATIENT SEARCH TAB ─── */
+              <div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px'}}>
+                  <div style={{position: 'relative', flex: 1}}>
+                    <div style={{position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8'}}>
+                      <Icons.Search />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search by name, MRN, diagnosis, or ID..."
+                      value={patientSearch}
+                      onChange={(e) => setPatientSearch(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px 12px 44px',
+                        borderRadius: '12px',
+                        border: '1.5px solid #e2e8f0',
+                        fontSize: '15px',
+                        outline: 'none',
+                        color: '#1e293b',
+                        backgroundColor: '#ffffff',
+                        transition: 'border-color 0.2s, box-shadow 0.2s'
+                      }}
+                      onFocus={(e) => { e.target.style.borderColor = '#0891b2'; e.target.style.boxShadow = '0 0 0 3px rgba(8,145,178,0.1)'; }}
+                      onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
+                    />
+                  </div>
+                  <span style={{color: '#64748b', fontSize: '14px', fontWeight: 600, whiteSpace: 'nowrap'}}>
+                    {filteredPatients.length} of {DEMO_PATIENTS.length} patients
+                  </span>
+                </div>
+
+                {/* Patient Grid */}
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px'}}>
+                  {filteredPatients.map(patient => (
+                    <div
+                      key={patient.id}
+                      onClick={() => selectPatient(patient)}
+                      style={{
+                        background: '#f8fafc',
+                        borderRadius: '12px',
+                        padding: '20px',
+                        border: '1.5px solid #e2e8f0',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        hover: { borderColor: '#0891b2', boxShadow: '0 4px 12px rgba(8,145,178,0.1)' }
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0891b2'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(8,145,178,0.1)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
+                    >
+                      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                          <div style={{
+                            width: '40px', height: '40px', borderRadius: '50%',
+                            background: '#0891b2', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: 'white'
+                          }}>
+                            <Icons.User />
+                          </div>
+                          <div>
+                            <h4 style={{margin: 0, fontSize: '15px', fontWeight: 700, color: '#0f172a'}}>{patient.name}</h4>
+                            <p style={{margin: 0, fontSize: '12px', color: '#64748b'}}>{patient.id} • {patient.mrn}</p>
+                          </div>
+                        </div>
+                        <span style={{
+                          padding: '4px 10px',
+                          borderRadius: '20px',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          background: `${getStatusColor(patient.status)}15`,
+                          color: getStatusColor(patient.status)
+                        }}>
+                          {patient.status}
+                        </span>
+                      </div>
+                      
+                      <div style={{marginBottom: '8px'}}>
+                        <p style={{margin: 0, fontSize: '12px', color: '#64748b', marginBottom: '4px'}}>Age: {patient.age} • {patient.gender}</p>
+                        <p style={{margin: 0, fontSize: '13px', color: '#334155', fontWeight: 600}}>{patient.diagnosis}</p>
+                      </div>
+                      
+                      <div style={{borderTop: '1px solid #e2e8f0', paddingTop: '10px', marginTop: '10px'}}>
+                        <p style={{margin: 0, fontSize: '12px', color: '#64748b'}}>
+                          <span style={{fontWeight: 600}}>Last Visit:</span> {patient.lastVisit}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {filteredPatients.length === 0 && (
+                  <div style={{textAlign: 'center', padding: '48px', color: '#94a3b8'}}>
+                    <p style={{fontSize: '16px', fontWeight: 600}}>No patients found</p>
+                    <p style={{fontSize: '14px'}}>Try searching with a different term</p>
+                  </div>
+                )}
+              </div>
             )}
 
             {/* Action Bar */}
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '20px', flexWrap: 'wrap', gap: '12px'}}>
-              <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
-                <button
-                  onClick={activeTab === 'text' ? handleExtract : handleFileUpload}
-                  disabled={loading || (activeTab === 'text' ? !text.trim() : !file)}
-                  style={{
-                    padding: '12px 28px',
-                    borderRadius: '10px',
-                    border: 'none',
-                    background: loading ? '#7dd3fc' : '#0891b2',
-                    color: 'white',
-                    fontWeight: 700,
-                    fontSize: '15px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    boxShadow: loading ? 'none' : '0 4px 14px rgba(8,145,178,0.35)',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => { if (!loading) e.target.style.background = '#0e7490'; }}
-                  onMouseLeave={(e) => { if (!loading) e.target.style.background = '#0891b2'; }}
-                >
-                  {loading ? '⏳ Processing...' : '🔍 Extract Entities'}
-                </button>
-
-                {(entities.length > 0 || file) && (
+            {activeTab !== 'patients' && (
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '20px', flexWrap: 'wrap', gap: '12px'}}>
+                <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
                   <button
-                    onClick={clearAll}
+                    onClick={activeTab === 'text' ? handleExtract : handleFileUpload}
+                    disabled={loading || (activeTab === 'text' ? !text.trim() : !file)}
                     style={{
-                      padding: '12px 20px',
+                      padding: '12px 28px',
                       borderRadius: '10px',
-                      border: '1.5px solid #e2e8f0',
-                      background: '#ffffff',
-                      color: '#64748b',
-                      fontWeight: 600,
-                      fontSize: '14px',
-                      cursor: 'pointer',
+                      border: 'none',
+                      background: loading ? '#7dd3fc' : '#0891b2',
+                      color: 'white',
+                      fontWeight: 700,
+                      fontSize: '15px',
+                      cursor: loading ? 'not-allowed' : 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '6px'
+                      gap: '8px',
+                      boxShadow: loading ? 'none' : '0 4px 14px rgba(8,145,178,0.35)',
+                      transition: 'all 0.2s'
                     }}
+                    onMouseEnter={(e) => { if (!loading) e.target.style.background = '#0e7490'; }}
+                    onMouseLeave={(e) => { if (!loading) e.target.style.background = '#0891b2'; }}
                   >
-                    <Icons.Trash /> Clear
+                    {loading ? '⏳ Processing...' : '🔍 Extract Entities'}
                   </button>
+
+                  {(entities.length > 0 || file) && (
+                    <button
+                      onClick={clearAll}
+                      style={{
+                        padding: '12px 20px',
+                        borderRadius: '10px',
+                        border: '1.5px solid #e2e8f0',
+                        background: '#ffffff',
+                        color: '#64748b',
+                        fontWeight: 600,
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <Icons.Trash /> Clear
+                    </button>
+                  )}
+                </div>
+
+                {entities.length > 0 && (
+                  <div style={{display: 'flex', gap: '10px'}}>
+                    <button onClick={exportJSON} style={exportBtnStyle}>
+                      <Icons.Download /> JSON
+                    </button>
+                    <button onClick={exportCSV} style={exportBtnStyle}>
+                      <Icons.Download /> CSV
+                    </button>
+                  </div>
                 )}
               </div>
-
-              {entities.length > 0 && (
-                <div style={{display: 'flex', gap: '10px'}}>
-                  <button onClick={exportJSON} style={exportBtnStyle}>
-                    <Icons.Download /> JSON
-                  </button>
-                  <button onClick={exportCSV} style={exportBtnStyle}>
-                    <Icons.Download /> CSV
-                  </button>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
 
