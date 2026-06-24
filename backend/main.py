@@ -5,7 +5,6 @@ from typing import List
 import requests
 import os
 import io
-import random
 
 # Optional file extractors
 try:
@@ -31,7 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Hugging Face Inference API
+# Hugging Face Inference API (free, no download needed)
 HF_API_URL = "https://api-inference.huggingface.co/models/d4data/biomedical-ner-all"
 HF_TOKEN = os.getenv("HF_API_TOKEN", "")
 
@@ -64,7 +63,6 @@ Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson."""
 
 DEMO_ENTITIES = [
     {"text": "John Doe", "label": "PERSON", "start": 8, "end": 16, "score": 0.98},
-    {"text": "58-year-old", "label": "ANATOMY", "start": 18, "end": 29, "score": 0.85},
     {"text": "chest pain", "label": "SYMPTOM", "start": 81, "end": 91, "score": 0.96},
     {"text": "left arm", "label": "ANATOMY", "start": 111, "end": 119, "score": 0.92},
     {"text": "Type 2 Diabetes Mellitus", "label": "DISEASE", "start": 147, "end": 171, "score": 0.97},
@@ -94,6 +92,14 @@ DEMO_ENTITIES = [
     {"text": "July 2, 2024", "label": "TEMPORAL", "start": 800, "end": 812, "score": 0.92},
     {"text": "Michael Johnson", "label": "PERSON", "start": 818, "end": 833, "score": 0.96},
 ]
+
+def query_hf(text):
+    headers = {"Authorization": f"Bearer {HF_TOKEN}"} if HF_TOKEN else {}
+    payload = {"inputs": text}
+    response = requests.post(HF_API_URL, headers=headers, json=payload, timeout=30)
+    if response.status_code != 200:
+        raise HTTPException(503, f"Hugging Face API error: {response.text}")
+    return response.json()
 
 def extract_text_from_file(file: UploadFile) -> str:
     filename = file.filename.lower()
@@ -128,33 +134,26 @@ def process_text(text: str):
     
     # Try Hugging Face API first
     try:
-        headers = {"Authorization": f"Bearer {HF_TOKEN}"} if HF_TOKEN else {}
-        payload = {"inputs": text}
-        response = requests.post(HF_API_URL, headers=headers, json=payload, timeout=15)
+        hf_results = query_hf(text)
+        entities = []
+        for r in hf_results:
+            entities.append({
+                "text": r.get("word", r.get("text", "")),
+                "label": r.get("entity_group", r.get("entity", "UNKNOWN")),
+                "start": r.get("start", 0),
+                "end": r.get("end", 0),
+                "score": round(r.get("score", 0), 4)
+            })
         
-        if response.status_code == 200:
-            hf_results = response.json()
-            entities = []
-            for r in hf_results:
-                entities.append({
-                    "text": r.get("word", r.get("text", "")),
-                    "label": r.get("entity_group", r.get("entity", "UNKNOWN")),
-                    "start": r.get("start", 0),
-                    "end": r.get("end", 0),
-                    "score": round(r.get("score", 0), 4)
-                })
-            
-            stats = {"total": len(entities), "by_type": {}}
-            for e in entities:
-                stats["by_type"][e["label"]] = stats["by_type"].get(e["label"], 0) + 1
-            
-            return {"entities": entities, "text": text, "stats": stats}
+        stats = {"total": len(entities), "by_type": {}}
+        for e in entities:
+            stats["by_type"][e["label"]] = stats["by_type"].get(e["label"], 0) + 1
+        
+        return {"entities": entities, "text": text, "stats": stats}
     except Exception as e:
         print(f"HF API failed: {e}")
-        # Fall through to demo mode
-    
-    # If HF fails, return empty but valid response
-    return {"entities": [], "text": text, "stats": {"total": 0, "by_type": {}}}
+        # Fall through to empty response
+        return {"entities": [], "text": text, "stats": {"total": 0, "by_type": {}}}
 
 @app.post("/predict", response_model=NERResponse)
 def predict(input_data: TextInput):
