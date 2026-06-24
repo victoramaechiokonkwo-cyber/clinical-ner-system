@@ -4,7 +4,7 @@ import './App.css';
 // ─── HARDCODED API URL ───
 const API_URL = 'https://clinical-ner-api.onrender.com';
 
-// ─── Color Palette for Entities ───
+// ─── Color Palette ───
 const ENTITY_STYLES = {
   "DISEASE": { color: "#dc2626", bg: "#fee2e2", label: "Disease" },
   "CHEMICAL": { color: "#2563eb", bg: "#dbeafe", label: "Chemical" },
@@ -14,34 +14,37 @@ const ENTITY_STYLES = {
   "PROCEDURE": { color: "#d97706", bg: "#fef3c7", label: "Procedure" },
   "PERSON": { color: "#0891b2", bg: "#cffafe", label: "Person" },
   "ORGANIZATION": { color: "#4f46e5", bg: "#e0e7ff", label: "Organization" },
+  "TEMPORAL": { color: "#be185d", bg: "#fce7f3", label: "Temporal" },
   "default": { color: "#475569", bg: "#f1f5f9", label: "Other" }
 };
 
-// ─── Icons (Inline SVG) ───
+// ─── Icons ───
 const Icons = {
   Upload: () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="17 8 12 3 7 8"/>
-      <line x1="12" y1="3" x2="12" y2="15"/>
+      <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
     </svg>
   ),
   Trash: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="3 6 5 6 21 6"/>
-      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
     </svg>
   ),
   Download: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="7 10 12 15 17 10"/>
-      <line x1="12" y1="15" x2="12" y2="3"/>
+      <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
     </svg>
   ),
   Check: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  Play: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="5 3 19 12 5 21 5 3"/>
     </svg>
   )
 };
@@ -61,14 +64,12 @@ function App() {
   const [hiddenTypes, setHiddenTypes] = useState(new Set());
   const [hoveredEntity, setHoveredEntity] = useState(null);
 
-  // ─── Check Backend ───
   useEffect(() => {
     fetch(`${API_URL}/health`)
       .then(r => r.ok ? setBackendStatus('connected') : setBackendStatus('error'))
       .catch(() => setBackendStatus('offline'));
   }, []);
 
-  // ─── Handlers ───
   const handleExtract = async () => {
     if (!text.trim()) return;
     setLoading(true);
@@ -79,12 +80,71 @@ function App() {
         body: JSON.stringify({ text }),
       });
       const data = await res.json();
-      setEntities(data.entities);
-      setStats(data.stats);
+      setEntities(data.entities || []);
+      setStats(data.stats || {total: 0, by_type: {}});
     } catch (err) {
-      alert('Failed to connect to backend. Is it running?');
+      alert('Backend failed. Try Demo Mode instead!');
     }
     setLoading(false);
+  };
+
+  const handleDemo = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/demo`);
+      const data = await res.json();
+      setText(data.text);
+      setEntities(data.entities || []);
+      setStats(data.stats || {total: 0, by_type: {}});
+    } catch (err) {
+      // Ultimate fallback: load demo data directly in frontend
+      loadLocalDemo();
+    }
+    setLoading(false);
+  };
+
+  const loadLocalDemo = () => {
+    const demoText = `Patient John Doe, 58-year-old male, was admitted on June 15, 2024, with complaints of severe chest pain radiating to the left arm. 
+He has a history of Type 2 Diabetes Mellitus, Hypertension, and Hyperlipidemia. 
+Current medications include Metformin 1000mg twice daily, Lisinopril 10mg daily, Atorvastatin 40mg daily, and Aspirin 81mg daily.
+Physical examination revealed elevated blood pressure at 160/95 mmHg. 
+ECG showed ST-segment elevation in leads V1-V4. 
+Troponin levels were elevated at 2.4 ng/mL. 
+Patient was diagnosed with Acute Myocardial Infarction and scheduled for emergency Percutaneous Coronary Intervention (PCI).
+Dr. Sarah Smith, the attending cardiologist, performed the procedure. 
+Post-operative care included administration of Heparin infusion and Clopidogrel 75mg daily.
+Follow-up appointment scheduled for July 2, 2024 with Dr. Michael Johnson.`;
+
+    const demoEntities = [
+      {"text": "John Doe", "label": "PERSON", "start": 8, "end": 16, "score": 0.98},
+      {"text": "chest pain", "label": "SYMPTOM", "start": 81, "end": 91, "score": 0.96},
+      {"text": "left arm", "label": "ANATOMY", "start": 111, "end": 119, "score": 0.92},
+      {"text": "Type 2 Diabetes Mellitus", "label": "DISEASE", "start": 147, "end": 171, "score": 0.97},
+      {"text": "Hypertension", "label": "DISEASE", "start": 173, "end": 185, "score": 0.95},
+      {"text": "Hyperlipidemia", "label": "DISEASE", "start": 191, "end": 205, "score": 0.94},
+      {"text": "Metformin", "label": "DRUG", "start": 232, "end": 241, "score": 0.98},
+      {"text": "1000mg", "label": "CHEMICAL", "start": 242, "end": 248, "score": 0.89},
+      {"text": "Lisinopril", "label": "DRUG", "start": 266, "end": 276, "score": 0.97},
+      {"text": "Atorvastatin", "label": "DRUG", "start": 291, "end": 303, "score": 0.97},
+      {"text": "Aspirin", "label": "DRUG", "start": 318, "end": 325, "score": 0.96},
+      {"text": "blood pressure", "label": "ANATOMY", "start": 377, "end": 391, "score": 0.91},
+      {"text": "Acute Myocardial Infarction", "label": "DISEASE", "start": 520, "end": 547, "score": 0.98},
+      {"text": "Percutaneous Coronary Intervention", "label": "PROCEDURE", "start": 572, "end": 606, "score": 0.96},
+      {"text": "Sarah Smith", "label": "PERSON", "start": 632, "end": 643, "score": 0.97},
+      {"text": "Heparin", "label": "DRUG", "start": 724, "end": 731, "score": 0.96},
+      {"text": "Clopidogrel", "label": "DRUG", "start": 747, "end": 758, "score": 0.97},
+      {"text": "July 2, 2024", "label": "TEMPORAL", "start": 800, "end": 812, "score": 0.92},
+      {"text": "Michael Johnson", "label": "PERSON", "start": 818, "end": 833, "score": 0.96},
+    ];
+
+    const stats = {"total": demoEntities.length, "by_type": {}};
+    for (const e of demoEntities) {
+      stats["by_type"][e.label] = (stats["by_type"][e.label] || 0) + 1;
+    }
+
+    setText(demoText);
+    setEntities(demoEntities);
+    setStats(stats);
   };
 
   const handleFileUpload = async () => {
@@ -100,11 +160,11 @@ function App() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Upload failed');
       setText(data.text);
-      setEntities(data.entities);
-      setStats(data.stats);
+      setEntities(data.entities || []);
+      setStats(data.stats || {total: 0, by_type: {}});
       setActiveTab('text');
     } catch (err) {
-      alert('Upload failed: ' + err.message);
+      alert('Upload failed. Try Demo Mode instead!');
     }
     setLoading(false);
   };
@@ -157,7 +217,6 @@ function App() {
     setThreshold(0);
   };
 
-  // ─── Derived Data ───
   const filteredEntities = entities.filter(e => 
     e.score >= threshold && !hiddenTypes.has(e.label)
   );
@@ -166,7 +225,6 @@ function App() {
 
   const getStyle = (label) => ENTITY_STYLES[label] || ENTITY_STYLES.default;
 
-  // ─── Render Highlighted Text ───
   const renderHighlightedText = () => {
     if (!filteredEntities.length) return <p style={{lineHeight: 1.8, color: '#475569', fontSize: '15px'}}>{text}</p>;
     
@@ -207,11 +265,10 @@ function App() {
     return <p style={{lineHeight: 1.9, fontSize: '15px', color: '#334155'}}>{parts}</p>;
   };
 
-  // ─── UI ───
   return (
     <div style={{minHeight: '100vh', background: '#f0f4f8'}}>
       
-      {/* ═══ HEADER ═══ */}
+      {/* HEADER */}
       <header style={{
         background: '#ffffff',
         borderBottom: '1px solid #e2e8f0',
@@ -264,7 +321,51 @@ function App() {
 
       <main style={{maxWidth: '1200px', margin: '0 auto', padding: '32px 24px'}}>
         
-        {/* ═══ INPUT CARD ═══ */}
+        {/* DEMO BANNER */}
+        <div style={{
+          background: '#fef3c7',
+          border: '1.5px solid #f59e0b',
+          borderRadius: '12px',
+          padding: '16px 20px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div>
+            <p style={{margin: 0, fontWeight: 700, color: '#92400e', fontSize: '14px'}}>
+              ⚡ Demo Mode Available
+            </p>
+            <p style={{margin: '4px 0 0 0', color: '#a16207', fontSize: '13px'}}>
+              Load pre-filled clinical data with extracted entities instantly — no backend needed.
+            </p>
+          </div>
+          <button
+            onClick={handleDemo}
+            disabled={loading}
+            style={{
+              padding: '10px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              background: '#f59e0b',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: '14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 4px 12px rgba(245,158,11,0.3)',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <Icons.Play /> Load Demo Data
+          </button>
+        </div>
+
+        {/* INPUT CARD */}
         <div style={{
           background: '#ffffff',
           borderRadius: '16px',
@@ -321,7 +422,8 @@ function App() {
                     resize: 'vertical',
                     outline: 'none',
                     transition: 'border-color 0.2s, box-shadow 0.2s',
-                    color: '#334155'  // ← FIXED: Lighter text color instead of dark black
+                    color: '#1e293b',           // ← FIXED: Dark but readable text
+                    backgroundColor: '#ffffff'   // ← FIXED: White background always
                   }}
                   onFocus={(e) => { e.target.style.borderColor = '#0891b2'; e.target.style.boxShadow = '0 0 0 3px rgba(8,145,178,0.1)'; }}
                   onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
@@ -364,7 +466,7 @@ function App() {
 
             {/* Action Bar */}
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '20px', flexWrap: 'wrap', gap: '12px'}}>
-              <div style={{display: 'flex', gap: '10px'}}>
+              <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
                 <button
                   onClick={activeTab === 'text' ? handleExtract : handleFileUpload}
                   disabled={loading || (activeTab === 'text' ? !text.trim() : !file)}
@@ -425,7 +527,7 @@ function App() {
           </div>
         </div>
 
-        {/* ═══ RESULTS DASHBOARD ═══ */}
+        {/* RESULTS DASHBOARD */}
         {entities.length > 0 && stats && (
           <div style={{marginTop: '32px'}}>
             
@@ -514,7 +616,7 @@ function App() {
               </div>
             </div>
 
-            {/* Split View: Text + Table */}
+            {/* Split View */}
             <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px'}}>
               
               {/* Left: Highlighted Text */}
@@ -636,8 +738,6 @@ function App() {
     </div>
   );
 }
-
-// ─── Helper Components ───
 
 function StatCard({ title, value, sub, color, bg = '#ffffff' }) {
   return (
